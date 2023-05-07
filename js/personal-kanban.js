@@ -223,7 +223,10 @@ const loadLocalStorage = () => {
         newBlock.classList.add('block');
         newBlock.id = item.id;
         newBlock.innerText = item.text;
-        newBlock.style.borderColor = !item.color ? 'grey' : item.color;
+        const colorIndex = Math.max(0,colors.findIndex(c=>c.border==item.color));
+        color = colors[colorIndex];
+        newBlock.style.borderColor = color.border;
+        newBlock.style.backgroundColor = color.background;
         activeWorkspace.appendChild(newBlock);
     }
     clearModal();

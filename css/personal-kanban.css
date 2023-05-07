@@ -37,14 +37,14 @@ div.block {
     font-size:16px;
 }
 div.block:focus {
-    border-width:2px;
-    border-color:#00008b;
-    border-style:solid;
+    outline-width:2px;
+    outline-color:#00008b;
+    outline-style:solid;
 }
 div.block:focus-visible {
-    border-width:2px;
-    border-color:#00008b;
-    border-style:solid;
+    outline-width:2px;
+    outline-color:#00008b;
+    outline-style:solid;
 }
 textarea.block-edit {
     width:100%;
