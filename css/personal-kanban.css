@@ -29,16 +29,22 @@ div.block {
     width:300px;
     padding:10px;
     background-color:#eee;
-    border: 2px solid #ccc;
+    border-width:2px;
+    border-color:grey;
+    border-style:solid;
     box-sizing:border-box;
     border-radius:10px;
     font-size:16px;
 }
 div.block:focus {
-    border: 2px #00008b solid;
+    border-width:2px;
+    border-color:#00008b;
+    border-style:solid;
 }
 div.block:focus-visible {
-    border: 2px darkblue solid;
+    border-width:2px;
+    border-color:#00008b;
+    border-style:solid;
 }
 textarea.block-edit {
     width:100%;
@@ -74,4 +80,26 @@ kbd {
     padding:3px;
     min-width:19px;
     display:inline-block;
+}
+div.modal {
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+    box-sizing:border-box;
+    background-color:#ffffffcc;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    display:none;
+    z-index:3;
+}
+div.modal-block {
+    background-color:#ccc;
+    padding:2em;
+    border-radius:20px;
+}
+#no-blocks, #mid-block, #block-controls {
+    display:none;
 }
