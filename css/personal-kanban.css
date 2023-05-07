@@ -55,8 +55,15 @@ div#top-bar {
 }
 div#top-bar p {
     text-align:center;
-    margin-top:4px;
+    margin-top:0px;
     margin-bottom:0px;
+    height:36px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+div#top-bar p span {
+    display:block;
 }
 kbd {
     border:2px solid #111;
