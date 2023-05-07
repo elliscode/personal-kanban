@@ -84,7 +84,7 @@ const colors = [
 ];
 const changeColor = (event) => {
     const currentColor = event.target.style.borderColor;
-    const colorIndex = colors.findIndex(c=>c.border==currentColor);
+    const colorIndex = Math.max(0,colors.findIndex(c=>c.border==currentColor));
     const newIndex = index = (colorIndex + 1) % colors.length;
     event.target.style.borderColor = colors[newIndex].border;
     event.target.style.backgroundColor = colors[newIndex].background;
