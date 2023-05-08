@@ -26,6 +26,7 @@ div#controls {
     right:0px;
 }
 div.block {
+    position:relative;
     width:300px;
     padding:10px;
     background-color:#eee;
@@ -36,12 +37,12 @@ div.block {
     border-radius:10px;
     font-size:16px;
 }
-div.block:focus {
+div.block:focus, button:focus {
     outline-width:2px;
     outline-color:#00008b;
     outline-style:solid;
 }
-div.block:focus-visible {
+div.block:focus-visible, button:focus-visible {
     outline-width:2px;
     outline-color:#00008b;
     outline-style:solid;
@@ -93,7 +94,7 @@ div.modal {
     align-items: center;
     justify-content:center;
     display:none;
-    z-index:3;
+    z-index:4;
 }
 div.modal-block {
     background-color:#ccc;
@@ -102,4 +103,44 @@ div.modal-block {
 }
 #no-blocks, #mid-block, #block-controls {
     display:none;
+}
+button {
+    padding:5px;
+    margin:5px;
+    border-radius:5px;
+    display:inline-block;
+}
+div.buttons {
+    display:flex;
+    justify-content:space-evenly;
+}
+.scary {
+    border-color:red;
+    background-color: #ffe7e7;
+}
+#recycle-bin-button {
+    position:fixed;
+    top:0px;
+    right:0px;
+    margin:5px;
+    padding:5px;
+    border-radius:5px;
+    z-index:3;
+}
+#scroll-div {
+    overflow:scroll;
+    width:300px;
+    height:300px;
+}
+.restore-button {
+    position:absolute;
+    top:0px;
+    right:30px;
+    font-size:10px;
+}
+.delete-button {
+    position:absolute;
+    top:0px;
+    right:0px;
+    font-size:10px;
 }

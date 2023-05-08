@@ -92,7 +92,9 @@ const changeColor = (event) => {
 };
 let blockActiveWhenModalWasCalled = undefined;
 const showModal = (event, type) => {
-    blockActiveWhenModalWasCalled = event.target;
+    if(!!event && !!event.target && event.target.classList.contains('block')) {
+        blockActiveWhenModalWasCalled = event.target;
+    }
     const modals = document.getElementsByClassName('modal');
     for(const modal of modals) {
         modal.style.display = 'none';
@@ -107,9 +109,16 @@ const showModal = (event, type) => {
     removeCallbacks();
 };
 const deleteSelectedItem = () => {
+    const thingToFocus = !!blockActiveWhenModalWasCalled ? blockActiveWhenModalWasCalled.nextElementSibling : undefined;
+    const backupThingToFocus = !!blockActiveWhenModalWasCalled ? blockActiveWhenModalWasCalled.previousElementSibling : undefined;
     blockActiveWhenModalWasCalled.remove();
     clearModal();
     saveLocalStorage();
+    if(!!thingToFocus) {
+        thingToFocus.focus();
+    } else if (!!backupThingToFocus) {
+        backupThingToFocus.focus();
+    }
 }
 const hideModals = () => {
     showModal({target: undefined}, 'none');
@@ -133,7 +142,7 @@ const decideWhatTextToShow = (event) => {
 };
 const clearTabIndices = (items) => {
     if(!items) {
-        items = Array.from(document.getElementsByClassName('block'));
+        items = Array.from(activeWorkspace.getElementsByClassName('block'));
     } else if(!Array.isArray(items)) {
         items = [items];
     }
@@ -143,7 +152,7 @@ const clearTabIndices = (items) => {
 };
 const addTabIndices = (items) => {
     if(!items) {
-        items = Array.from(document.getElementsByClassName('block'));
+        items = Array.from(activeWorkspace.getElementsByClassName('block'));
     } else if(!Array.isArray(items)) {
         items = [items];
     }
@@ -153,7 +162,7 @@ const addTabIndices = (items) => {
 };
 const setEditBlockCallbacks = (items) => {
     if(!items) {
-        items = Array.from(document.getElementsByClassName('block'));
+        items = Array.from(activeWorkspace.getElementsByClassName('block'));
     } else if(!Array.isArray(items)) {
         items = [items];
     }
@@ -165,7 +174,7 @@ const setEditBlockCallbacks = (items) => {
 };
 const setNormalBlockCallbacks = (items) => {
     if(!items) {
-        items = Array.from(document.getElementsByClassName('block'));
+        items = Array.from(activeWorkspace.getElementsByClassName('block'));
     } else if(!Array.isArray(items)) {
         items = [items];
     }
@@ -175,7 +184,7 @@ const setNormalBlockCallbacks = (items) => {
 };
 const removeCallbacks = (items) => {
     if(!items) {
-        items = Array.from(document.getElementsByClassName('block'));
+        items = Array.from(activeWorkspace.getElementsByClassName('block'));
     } else if(!Array.isArray(items)) {
         items = [items];
     }
@@ -200,19 +209,20 @@ const clearModal = (event) => {
 const cancelModal = (event) => {
     const currentItem = blockActiveWhenModalWasCalled;
     clearModal();
-    currentItem.focus();
+    if(!!currentItem) {
+        currentItem.focus();
+    }
 };
 const LOCAL_STORAGE_ID = 'personal-kanban-data';
 const loadLocalStorage = () => {
-    const kanbanString = localStorage.getItem(LOCAL_STORAGE_ID);
-    let kanbanJson = {};
-    try {
-        kanbanJson = JSON.parse(kanbanString);
-        if(!kanbanJson) {
-            kanbanJson = {};
-        }
-    } catch (e) {
-        
+    const kanbanJson = getLocalStorage();
+    redrawBlocksFromJson(kanbanJson);
+    clearModal();
+};
+const redrawBlocksFromJson = (kanbanJson) => {
+    const existingBlocks = Array.from(activeWorkspace.getElementsByClassName('block'));
+    for(const block of existingBlocks) {
+        block.remove();
     }
     for(const key of Object.keys(kanbanJson)) {
         const item = kanbanJson[key];
@@ -224,15 +234,13 @@ const loadLocalStorage = () => {
         newBlock.id = item.id;
         newBlock.innerText = item.text;
         const colorIndex = Math.max(0,colors.findIndex(c=>c.border==item.color));
-        color = colors[colorIndex];
+        const color = colors[colorIndex];
         newBlock.style.borderColor = color.border;
         newBlock.style.backgroundColor = color.background;
         activeWorkspace.appendChild(newBlock);
     }
-    clearModal();
 };
-const saveLocalStorage = () => {
-    const blocks = document.getElementsByClassName('block');
+const getLocalStorage = () => {
     const kanbanString = localStorage.getItem(LOCAL_STORAGE_ID);
     let kanbanJson = {};
     try {
@@ -241,8 +249,13 @@ const saveLocalStorage = () => {
             kanbanJson = {};
         }
     } catch (e) {
-        localStorage.setItem(LOCAL_STORAGE_ID, JSON.stringify({}));
+        
     }
+    return kanbanJson;
+};
+const saveLocalStorage = () => {
+    const blocks = activeWorkspace.getElementsByClassName('block');
+    const kanbanJson = getLocalStorage();
     for(const key of Object.keys(kanbanJson)) {
         kanbanJson[key].deleted = true;
     }
@@ -250,6 +263,76 @@ const saveLocalStorage = () => {
         kanbanJson[block.id] = {id: block.id, text: block.innerText, deleted: false, color: block.style.borderColor};
     }
     localStorage.setItem(LOCAL_STORAGE_ID, JSON.stringify(kanbanJson));
+};
+const showRecycleBin = (event) => {
+    showModal(event, 'recycle-bin');
+    populateDeletedModal(event);
+}
+const populateDeletedModal = (event) => {
+    const scrollDiv = document.getElementById('scroll-div');
+    while(scrollDiv.firstElementChild) {
+        scrollDiv.firstElementChild.remove();
+    }
+    const kanbanJson = getLocalStorage();
+    for(const key of Object.keys(kanbanJson)) {
+        const item = kanbanJson[key];
+        if(!item.deleted) {
+            continue;
+        }
+        const div = document.createElement('div');
+        div.id = key;
+        div.innerText = item.text;
+        div.classList.add('block');
+        const colorIndex = Math.max(0,colors.findIndex(c=>c.border==item.color));
+        const color = colors[colorIndex];
+        div.style.borderColor = color.border;
+        div.style.backgroundColor = color.background;
+        div.style.marginBottom = '5px';
+
+        const restoreButton = document.createElement('button');
+        restoreButton.classList.add('restore-button');
+        restoreButton.innerHTML = '&#128228;';
+        restoreButton.addEventListener('click', restoreItem);
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.innerHTML = '&#128465;';
+        deleteButton.addEventListener('click', permenantlyDelete);
+
+        div.appendChild(restoreButton);
+        div.appendChild(deleteButton);
+
+        scrollDiv.appendChild(div);
+    }
+};
+const permenantlyDelete = (event) => {
+    let block = event.target;
+    while(block) {
+        if(block.classList.contains('block')) {
+            break;
+        }
+        block = block.parentElement;
+    }
+    const id = block.id;
+    let kanbanJson = getLocalStorage();
+    kanbanJson[id] = undefined;
+    localStorage.setItem(LOCAL_STORAGE_ID, JSON.stringify(kanbanJson));
+    block.remove();
+};
+const restoreItem = (event) => {
+    let block = event.target;
+    while(block) {
+        if(block.classList.contains('block')) {
+            break;
+        }
+        block = block.parentElement;
+    }
+    const id = block.id;
+    let kanbanJson = getLocalStorage();
+    kanbanJson[id].deleted = false;
+    localStorage.setItem(LOCAL_STORAGE_ID, JSON.stringify(kanbanJson));
+    block.remove();
+    redrawBlocksFromJson(kanbanJson);
 };
 loadLocalStorage();
 decideWhatTextToShow();
