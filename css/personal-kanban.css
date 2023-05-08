@@ -118,11 +118,13 @@ div.buttons {
     border-color:red;
     background-color: #ffe7e7;
 }
-#recycle-bin-button {
+#button-bar {
     position:fixed;
     top:0px;
     right:0px;
-    margin:5px;
+}
+#button-bar button {
+    margin:5px 5px 5px 0px;
     padding:5px;
     border-radius:5px;
     z-index:3;

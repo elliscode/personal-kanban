@@ -334,6 +334,25 @@ const restoreItem = (event) => {
     block.remove();
     redrawBlocksFromJson(kanbanJson);
 };
+const download = (filename, text) => {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+};
+const saveToFile = (event) => {
+    const dateString = (new Date()).toJSON().replace(/[^\d]/g,' ').trim().replace(/ /g,'-');
+    download('kanban-' + dateString, JSON.stringify(getLocalStorage()));
+};
+// const loadFromFile = (event) => {
+
+// };
 loadLocalStorage();
 decideWhatTextToShow();
 setBodyCallbacks();
