@@ -144,3 +144,6 @@ div.buttons {
     right:0px;
     font-size:10px;
 }
+.modal-block p {
+    margin-top:0px;
+}

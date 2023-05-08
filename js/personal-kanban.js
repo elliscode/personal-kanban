@@ -37,7 +37,7 @@ const listenForEnter = (event) => {
     if(event.key.toLowerCase() == 'enter' && !event.shiftKey) {
         parent = setValueOfParent(event);
         decideWhatTextToShow();
-        setFocus({target: parent});
+        document.body.focus();
         saveLocalStorage();
     }
 };

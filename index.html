@@ -4,16 +4,16 @@
         <title>Personal Kanban</title>
         <link rel="stylesheet" href="css/personal-kanban.css" />
     </head>
-    <body>
+    <body tabIndex="0">
         <div id="top-bar">
             <div id="no-blocks"><p><span>Start typing to create a task</span></p></div>
             <div id="mid-block"><p><span>Press <kbd>Enter</kbd> to finalize task, press <kbd>Shift</kbd> + <kbd>Enter</kbd> to create a newline</p></span></div>
             <div id="block-controls"><p><span><kbd>C</kbd> = color &mdash; <kbd>D</kbd> = delete &mdash; <kbd>E</kbd> = edit&mdash; <kbd>Enter</kbd> = clear focus</p></span></div>
         </div>
-        <button id="recycle-bin-button" onclick="showRecycleBin(event)">&#128465;</button>
+        <button id="recycle-bin-button" tabIndex="-1" onclick="showRecycleBin(event)">&#128465;</button>
         <div class="desktop"></div>
         <div class="modal" id="delete-modal"><div class="modal-block"><p>Are you sure you want to delete?</p><div class="buttons"><button class="cancel" onclick="cancelModal(event)">Cancel</button><button class="scary" onclick="deleteSelectedItem()">Yes</button></div></div></div>
-        <div class="modal" id="recycle-bin"><div class="modal-block"><p>Deleted items</p><div id="scroll-div"></div><div class="buttons"><button class="cancel" onclick="cancelModal(event)">Cancel</button></div></div></div>
+        <div class="modal" id="recycle-bin"><div class="modal-block"><p>Recycle Bin</p><div id="scroll-div"></div><div class="buttons"><button class="cancel" onclick="cancelModal(event)">Cancel</button></div></div></div>
         <script src="js/personal-kanban.js"></script>
     </body>
 </html>
